@@ -11,8 +11,7 @@ const Container = styled.div`
   max-height: 100vh;
   width: 100%;
   grid-template-columns: calc(1fr - 960px) 960px calc(1fr - 960px);
-  grid-template-rows: 40px calc(100vh - 40px);
-  box-sizing: border-box;
+  grid-template-rows: 45px calc(100vh - 45px);
 `;
 
 const NavWrapper = styled.div`

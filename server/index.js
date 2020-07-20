@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const scrapers = require("./scrapers");
 const writeFileP = require("write-file-p");
 const readJson = require("read-json-file");
+const fs = require("fs");
 
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
@@ -15,32 +16,52 @@ app.use(function (req, res, next) {
 });
 
 app.get("/news", async (req, res) => {
-  const newsData = await scrapers.scrapeNews(
-    "https://www.iol.co.za/news/south-africa"
-  );
-  console.log("Scraped res ===>", { newsData });
-  res.send(newsData);
+  try {
+    const newsData = await scrapers.scrapeNews(
+      "https://www.iol.co.za/news/south-africa"
+    );
+    console.log("Scraped res ===>", { newsData });
+    res.send(newsData);
+  } catch (error) {
+    res.sendStatus(500);
+  }
 });
 
 app.get("/saved-data", async (req, res) => {
-  const savedData = await readJson(
-    `${__dirname}/data/output.json`,
-    (error, data) => {
-      if (error) {
-        throw error;
-      }
-      console.log("saved data ===> ", data);
+  await readJson(`${__dirname}/data/output.json`, (error, data) => {
+    if (error || data === undefined) {
+      res.sendStatus(500);
+    } else {
+      res.send(data);
     }
-  );
-  res.send(savedData || {});
+  });
 });
 
 app.post("/save", async (req, res) => {
-  console.log("Body ===>", req.body);
-  writeFileP.sync(`${__dirname}/data/output.json`, req.body, (err, data) => {
-    console.log(err || data);
+  await readJson(`${__dirname}/data/output.json`, (error, data) => {
+    if (error || data === undefined) {
+      writeFileP.sync(
+        `${__dirname}/data/output.json`,
+        req.body,
+        (err, data) => {
+          console.log(err || data);
+        }
+      );
+      res.sendStatus(200);
+    } else {
+      const bodyItem = req.body[0];
+      data.map((item) => {
+        if (bodyItem.heading === item.heading) {
+          return res.sendStatus(200);
+        }
+      });
+      data.push(bodyItem);
+      writeFileP.sync(`${__dirname}/data/output.json`, data, (err, data) => {
+        console.log(err || data);
+      });
+      res.send(data);
+    }
   });
-  res.send("success");
 });
 
 app.listen(port, () =>

@@ -2,6 +2,35 @@ import React, { useState } from "react";
 import { Loader, Button, Divider, Modal } from "semantic-ui-react";
 import styled from "styled-components";
 
+const NewsWrapper = styled.div`
+  width: 600px;
+  margin: auto;
+  @media (max-width: 768px) {
+    width: 200px;
+    margin: auto;
+    Button {
+      margin-top: 0.8em;
+    }
+  }
+`;
+const ImageWrapper = styled.div`
+  @media (max-width: 768px) {
+    img {
+      width: 200px;
+    }
+  }
+`;
+const TextWrapper = styled.div`
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 1.2rem;
+    }
+  }
+`;
+const ButtonWrapper = styled.div`
+  margin-top: 1em;
+`;
+
 type newsType = {
   heading: string;
   meta: string;
@@ -14,35 +43,46 @@ const News = () => {
   const [loading, setloading] = useState(false);
   const [saveState, setSaveState] = useState(false);
   const [modalState, setModalState] = useState(false);
+  const [modalMsg, setModalMsg] = useState("");
 
   const loadNewsArticle = async () => {
-    console.log("Loading scraper...");
     setloading(true);
     setNewsData(undefined);
     const res = await fetch("http://localhost:5500/news");
-    const news = await res.json();
-    console.log("news ===> ", news);
-    const saved = await fetch("http://localhost:5500/saved-data");
-    setloading(false);
-    setNewsData(news);
+    if (res.status === 500) {
+      setModalMsg("Session timed out. Please try again.");
+      setModalState(true);
+      setloading(false);
+    } else {
+      const news = await res.json();
+      setloading(false);
+      setNewsData(news);
+    }
   };
   const SaveData = async () => {
     setSaveState(true);
-    await fetch("http://localhost:5500/save", {
+    const res = await fetch("http://localhost:5500/save", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ newsData }),
+      body: JSON.stringify([newsData]),
     });
-    setModalState(true);
-    setSaveState(false);
+    if (res.status === 500) {
+      setModalMsg("Unsuccessful. Please try again");
+      setModalState(true);
+      setSaveState(false);
+    } else {
+      setModalMsg("Aritcle saved!");
+      setModalState(true);
+      setSaveState(false);
+    }
   };
   return (
     <>
-      <div style={{ padding: "1.5em" }}>
+      <div style={{ padding: "1.5em", width: "inherit" }}>
         <Button disabled={loading} primary onClick={() => loadNewsArticle()}>
-          Scrape Latest News
+          Scrap Latest News
         </Button>
         <Divider />
       </div>
@@ -53,38 +93,50 @@ const News = () => {
       )}
       {newsData && (
         <>
-          <div style={{ width: "600px", margin: "auto" }}>
-            <img
-              src={newsData.imageURL}
-              alt="news_article_image"
-              width="500px"
-            />
-            <h2>{newsData.heading}</h2>
-            <p>{newsData.meta}</p>
-            <p>{newsData.article}</p>
-            <Button
-              disabled={saveState}
-              color="green"
-              onClick={() => SaveData()}
-            >
-              Save
-            </Button>
-          </div>
-          <Modal
-            size="small"
-            open={modalState}
-            onClose={() => setModalState(false)}
-          >
-            <Modal.Header>Successful</Modal.Header>
-            <Modal.Content>
-              <p>Aritcle saved!</p>
-            </Modal.Content>
-            <Modal.Actions>
-              <Button onClick={() => setModalState(false)}>Close</Button>
-            </Modal.Actions>
-          </Modal>
+          <NewsWrapper>
+            <ImageWrapper>
+              <img
+                src={newsData.imageURL}
+                alt="news_article_image"
+                width="500px"
+              />
+            </ImageWrapper>
+            <TextWrapper>
+              <h2>{newsData.heading}</h2>
+              <p>{newsData.meta}</p>
+              <p>{newsData.article}</p>
+            </TextWrapper>
+            <ButtonWrapper>
+              <Button
+                disabled={saveState}
+                color="green"
+                onClick={() => SaveData()}
+              >
+                Save
+              </Button>
+            </ButtonWrapper>
+          </NewsWrapper>
         </>
       )}
+      <Modal
+        size="small"
+        open={modalState}
+        onClose={() => setModalState(false)}
+      >
+        <Modal.Content>
+          <p>{modalMsg}</p>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button
+            onClick={() => {
+              setModalState(false);
+              setModalMsg("");
+            }}
+          >
+            OK
+          </Button>
+        </Modal.Actions>
+      </Modal>
     </>
   );
 };
