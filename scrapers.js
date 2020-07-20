@@ -1,7 +1,6 @@
 const puppeteer = require("puppeteer");
 
 const scrapeNews = async (url) => {
-  console.log("Scraping...");
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);

@@ -20,7 +20,6 @@ app.get("/news", async (req, res) => {
     const newsData = await scrapers.scrapeNews(
       "https://www.iol.co.za/news/south-africa"
     );
-    console.log("Scraped res ===>", { newsData });
     res.send(newsData);
   } catch (error) {
     res.sendStatus(500);
@@ -50,16 +49,11 @@ app.post("/save", async (req, res) => {
       res.sendStatus(200);
     } else {
       const bodyItem = req.body[0];
-      data.map((item) => {
-        if (bodyItem.heading === item.heading) {
-          return res.sendStatus(200);
-        }
-      });
       data.push(bodyItem);
       writeFileP.sync(`${__dirname}/data/output.json`, data, (err, data) => {
         console.log(err || data);
       });
-      res.send(data);
+      return res.send(data);
     }
   });
 });
