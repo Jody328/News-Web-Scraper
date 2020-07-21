@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-const port = 5500;
+// const port = 5500;
+const port = process.env.PORT || 5500;
 
 const bodyParser = require("body-parser");
 const scrapers = require("./scrapers");
@@ -8,7 +9,15 @@ const writeFileP = require("write-file-p");
 const readJson = require("read-json-file");
 const path = require("path");
 
+// app.use(express.static(path.join(__dirname, "build")));
+
+app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "build")));
+
+app.get("/*", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // disabled for security on local
