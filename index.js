@@ -17,6 +17,7 @@ app.use(function (req, res, next) {
 });
 
 app.get("/news", async (req, res) => {
+  console.log("news...");
   try {
     const newsData = await scrapers.scrapeNews(
       "https://www.iol.co.za/news/south-africa"
