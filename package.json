@@ -22,6 +22,7 @@
     "fs": "0.0.1-security",
     "mysql": "github:mysqljs/mysql",
     "nodemon": "^2.0.4",
+    "path": "^0.12.7",
     "puppeteer": "^5.2.0",
     "read-json-file": "^1.0.1",
     "write-file-p": "^1.0.7"

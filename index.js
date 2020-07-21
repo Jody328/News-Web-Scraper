@@ -6,7 +6,9 @@ const bodyParser = require("body-parser");
 const scrapers = require("./scrapers");
 const writeFileP = require("write-file-p");
 const readJson = require("read-json-file");
-const fs = require("fs");
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "client/build")));
 
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
