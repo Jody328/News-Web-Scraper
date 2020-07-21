@@ -8,8 +8,10 @@ const writeFileP = require("write-file-p");
 const readJson = require("read-json-file");
 const path = require("path");
 
-app.use(express.static(path.join(__dirname, "client/build")));
-
+app.use(express.static(path.join(__dirname, "build")));
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // disabled for security on local
