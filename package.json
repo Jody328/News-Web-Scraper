@@ -8,9 +8,9 @@
     "npm": "6.13.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "start": "node index.js",
+    "server": "node index.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
   "keywords": [],
@@ -27,5 +27,8 @@
     "puppeteer": "^5.2.0",
     "read-json-file": "^1.0.1",
     "write-file-p": "^1.0.7"
+  },
+  "devDependencies": {
+    "concurrently": "^5.2.0"
   }
 }
