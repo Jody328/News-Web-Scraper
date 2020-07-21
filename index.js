@@ -10,14 +10,7 @@ const writeFileP = require("write-file-p");
 const readJson = require("read-json-file");
 const path = require("path");
 
-// app.use(express.static(path.join(__dirname, "build")));
-
-app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "build")));
-app.use(favicon(__dirname + "/build/favicon.ico"));
-app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
 
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
@@ -27,7 +20,6 @@ app.use(function (req, res, next) {
 });
 
 app.get("/news", async (req, res) => {
-  console.log("news...");
   try {
     const newsData = await scrapers.scrapeNews(
       "https://www.iol.co.za/news/south-africa"
@@ -70,7 +62,6 @@ app.post("/save", async (req, res) => {
   });
 });
 
-// app.listen(port, () =>
-//   console.log(`App is listening at http://localhost:${port}`)
-// );
-app.listen(port);
+app.listen(port, () =>
+  console.log(`App is listening at http://localhost:${port}`)
+);
