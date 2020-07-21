@@ -8,9 +8,10 @@
     "npm": "6.13.4"
   },
   "scripts": {
-    "server": "node index.js",
     "client": "cd client && npm start",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "node -r dotenv/config ./bin/www",
+    "server": "nodemon",
+    "dev": "concurrently,client --kill-others-on-fail \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "keywords": [],
