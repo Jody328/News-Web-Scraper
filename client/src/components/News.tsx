@@ -48,7 +48,7 @@ const News = () => {
   const loadNewsArticle = async () => {
     setloading(true);
     setNewsData(undefined);
-    const res = await fetch("http://localhost:5500/news");
+    const res = await fetch("https://web-scraper-news.herokuapp.com/news");
     if (res.status === 500) {
       setModalMsg("Session timed out. Please try again.");
       setModalState(true);
@@ -61,7 +61,7 @@ const News = () => {
   };
   const SaveData = async () => {
     setSaveState(true);
-    const res = await fetch("http://localhost:5500/save", {
+    const res = await fetch("https://web-scraper-news.herokuapp.com/save", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
