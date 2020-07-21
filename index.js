@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const favicon = require("express-favicon");
 // const port = 5500;
 const port = process.env.PORT || 5500;
 
@@ -13,7 +14,7 @@ const path = require("path");
 
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "build")));
-
+app.use(favicon(__dirname + "/build/favicon.ico"));
 app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
@@ -69,6 +70,7 @@ app.post("/save", async (req, res) => {
   });
 });
 
-app.listen(port, () =>
-  console.log(`App is listening at http://localhost:${port}`)
-);
+// app.listen(port, () =>
+//   console.log(`App is listening at http://localhost:${port}`)
+// );
+app.listen(port);
