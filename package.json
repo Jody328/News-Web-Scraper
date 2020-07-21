@@ -11,7 +11,7 @@
     "client": "cd client && npm start",
     "start": "node -r dotenv/config ./bin/www",
     "server": "nodemon",
-    "dev": "concurrently,client --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "dev": "concurrently -n api,ui --kill-others-on-fail \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
   "keywords": [],
