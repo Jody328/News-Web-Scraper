@@ -10,7 +10,7 @@ const writeFileP = require("write-file-p");
 const readJson = require("read-json-file");
 const path = require("path");
 
-app.use(express.static(path.join(__dirname, "build")));
+// app.use(express.static(path.join(__dirname, "build")));
 
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
@@ -61,6 +61,13 @@ app.post("/save", async (req, res) => {
     }
   });
 });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+  });
+}
 
 app.listen(port, () =>
   console.log(`App is listening at http://localhost:${port}`)

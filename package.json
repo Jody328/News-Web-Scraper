@@ -8,11 +8,9 @@
     "npm": "6.13.4"
   },
   "scripts": {
-    "client": "cd client && npm start",
-    "start": "node index.js --prefix client",
-    "server": "nodemon",
-    "dev": "concurrently -n api,ui --kill-others-on-fail \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
+    "start": "node index.js ",
+    "heroku-postbuild": "cd client && npm install && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
